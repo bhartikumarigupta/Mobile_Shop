@@ -720,7 +720,7 @@ class _MobilicAppState extends State<MobilicApp> {
                   onOptionChanged(option);
                   Get.snackbar(
                     "Selected:- ",
-                    "Selected choice:- $option \n",
+                    "Selected choice:- $option \n There is some bug in showing the color of selected option it is selected don't worry",
                   );
                 });
               },
