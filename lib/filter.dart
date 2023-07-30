@@ -1,36 +1,10 @@
+import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
-class FilterPage extends StatefulWidget {
-  @override
-  _FilterPageState createState() => _FilterPageState();
-}
+import 'controller.dart';
 
-class _FilterPageState extends State<FilterPage> {
-  double _minPrice = 5000;
-  double _maxPrice = 50000;
-  String _selectedOption1 = 'All';
-  String _selectedOption2 = 'All';
-  String _selectedOption3 = 'All';
-  String _selectedOption4 = 'All';
-
-  TextEditingController _minPriceController = TextEditingController();
-  TextEditingController _maxPriceController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    // Set initial values for the text fields
-    _minPriceController.text = _minPrice.toString();
-    _maxPriceController.text = _maxPrice.toString();
-  }
-
-  @override
-  void dispose() {
-    // Clean up the controllers
-    _minPriceController.dispose();
-    _maxPriceController.dispose();
-    super.dispose();
-  }
+class FilterPage extends StatelessWidget {
+  final Controller controller = Get.put(Controller());
 
   @override
   Widget build(BuildContext context) {
@@ -51,44 +25,36 @@ class _FilterPageState extends State<FilterPage> {
             _buildFilterSection(
               title: 'Filter',
               options: ['All', 'Apple', 'Google', 'Samsung', 'Nokia'],
-              selectedOption: _selectedOption1,
+              selectedOption: controller.selectedOption1.value,
               onOptionChanged: (value) {
-                setState(() {
-                  _selectedOption1 = value;
-                });
+                controller.selectedOption1.value = value;
               },
               btn: "clear",
             ),
             _buildFilterSection(
               title: 'RAM',
               options: ['All', '2GB', '4GB', '8GB', '16GB'],
-              selectedOption: _selectedOption2,
+              selectedOption: controller.selectedOption2.value,
               onOptionChanged: (value) {
-                setState(() {
-                  _selectedOption2 = value;
-                });
+                controller.selectedOption2.value = value;
               },
               btn: '',
             ),
             _buildFilterSection(
               title: 'Storage',
               options: ['All', '64GB', '128GB', '256GB'],
-              selectedOption: _selectedOption3,
+              selectedOption: controller.selectedOption3.value,
               onOptionChanged: (value) {
-                setState(() {
-                  _selectedOption3 = value;
-                });
+                controller.selectedOption3.value = value;
               },
               btn: '',
             ),
             _buildFilterSection(
               title: 'Condition',
               options: ['All', 'Like New', 'Excellent', 'Good', 'Fair'],
-              selectedOption: _selectedOption4,
+              selectedOption: controller.selectedOption4.value,
               onOptionChanged: (value) {
-                setState(() {
-                  _selectedOption4 = value;
-                });
+                controller.selectedOption4.value = value;
               },
               btn: '',
             ),
@@ -99,32 +65,30 @@ class _FilterPageState extends State<FilterPage> {
               children: [
                 Flexible(
                   child: TextFormField(
-                    controller: _minPriceController,
+                    controller: controller.minPriceController.value,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                       labelText: 'Min Price',
                       border: OutlineInputBorder(),
                     ),
                     onChanged: (value) {
-                      setState(() {
-                        _minPrice = double.tryParse(value) ?? _minPrice;
-                      });
+                      controller.minPrice.value =
+                          double.tryParse(value) ?? controller.minPrice.value;
                     },
                   ),
                 ),
                 SizedBox(width: 180),
                 Flexible(
                   child: TextFormField(
-                    controller: _maxPriceController,
+                    controller: controller.maxPriceController.value,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                       labelText: 'Max Price',
                       border: OutlineInputBorder(),
                     ),
                     onChanged: (value) {
-                      setState(() {
-                        _maxPrice = double.tryParse(value) ?? _maxPrice;
-                      });
+                      controller.maxPrice.value =
+                          double.tryParse(value) ?? controller.maxPrice.value;
                     },
                   ),
                 ),
@@ -132,17 +96,19 @@ class _FilterPageState extends State<FilterPage> {
             ),
             SizedBox(height: 5),
             RangeSlider(
-              values: RangeValues(_minPrice, _maxPrice),
+              values: RangeValues(
+                  controller.minPrice.value, controller.maxPrice.value),
               min: 5000,
-              max: 50000,
+              max:
+                  500000, // Change this to match the maximum price value (500000)
               divisions: 100,
               onChanged: (values) {
-                setState(() {
-                  _minPrice = values.start;
-                  _maxPrice = values.end;
-                  _minPriceController.text = _minPrice.toString();
-                  _maxPriceController.text = _maxPrice.toString();
-                });
+                controller.minPrice.value = values.start;
+                controller.maxPrice.value = values.end;
+                controller.minPriceController.value.text =
+                    controller.minPrice.value.toString();
+                controller.maxPriceController.value.text =
+                    controller.maxPrice.value.toString();
               },
             ),
 
@@ -150,13 +116,14 @@ class _FilterPageState extends State<FilterPage> {
             ElevatedButton(
               onPressed: () {
                 // Apply filters and return to the previous page
+
                 Navigator.pop(context, {
-                  'option1': _selectedOption1,
-                  'option2': _selectedOption2,
-                  'option3': _selectedOption3,
-                  'option4': _selectedOption4,
-                  'minPrice': _minPrice,
-                  'maxPrice': _maxPrice,
+                  'option1': controller.selectedOption1.value,
+                  'option2': controller.selectedOption2.value,
+                  'option3': controller.selectedOption3.value,
+                  'option4': controller.selectedOption4.value,
+                  'minPrice': controller.minPrice.value,
+                  'maxPrice': controller.maxPrice.value,
                 });
               },
               style: ElevatedButton.styleFrom(
@@ -193,16 +160,16 @@ class _FilterPageState extends State<FilterPage> {
             btn != ''
                 ? TextButton(
                     onPressed: () {
-                      setState(() {
-                        _selectedOption1 = 'All';
-                        _selectedOption2 = 'All';
-                        _selectedOption3 = 'All';
-                        _selectedOption4 = 'All';
-                        _minPrice = 5000;
-                        _maxPrice = 50000;
-                        _minPriceController.text = _minPrice.toString();
-                        _maxPriceController.text = _maxPrice.toString();
-                      });
+                      controller.selectedOption1.value = 'All';
+                      controller.selectedOption2.value = 'All';
+                      controller.selectedOption3.value = 'All';
+                      controller.selectedOption4.value = 'All';
+                      controller.minPrice.value = 5000;
+                      controller.maxPrice.value = 50000;
+                      controller.minPriceController.value.text =
+                          controller.minPrice.value.toString();
+                      controller.maxPriceController.value.text =
+                          controller.maxPrice.value.toString();
                     },
                     child: Text(
                       btn,

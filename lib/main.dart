@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart'; // Import the GetX package
 import 'package:mobile/mobileapp.dart';
 
 void main() {
@@ -10,13 +11,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
+      // Replace MaterialApp with GetMaterialApp
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSwatch().copyWith(
-          secondary: Colors.grey,
-        ),
-      ),
+      theme: ThemeData(primaryColor: Colors.blueGrey),
       home: MobilicApp(),
     );
   }
